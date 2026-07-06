@@ -1728,6 +1728,77 @@
   }
 }
 
+
+/* =========================================================
+   RADIO BAR DEL ZORRO — CORRECCIÓN MÓVIL REAL
+   Aplicada sobre las clases REALES del index.
+   Objetivo: eliminar repintados/composición costosa al hacer scroll.
+   PC queda intacto.
+   ========================================================= */
+
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+
+  /* APAGADO REAL de las capas animadas que existen en este index */
+  .hero-rain,
+  .hero-glass-drops,
+  .hero-glass-trails,
+  .hero-rain-bokeh,
+  .hero-amber-reflections {
+    display: none !important;
+    visibility: hidden !important;
+    animation: none !important;
+    transition: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    transform: none !important;
+    will-change: auto !important;
+    contain: none !important;
+  }
+
+  /* Evita que pseudo-elementos de esas capas sigan pintándose */
+  .hero-rain::before,
+  .hero-rain::after,
+  .hero-glass-drops::before,
+  .hero-glass-drops::after,
+  .hero-glass-trails::before,
+  .hero-glass-trails::after,
+  .hero-rain-bokeh::before,
+  .hero-rain-bokeh::after,
+  .hero-amber-reflections::before,
+  .hero-amber-reflections::after {
+    content: none !important;
+    display: none !important;
+    animation: none !important;
+  }
+
+  /* Fondo móvil estable: conserva oscuridad y ambiente sin animación */
+  html,
+  body {
+    background: #050505 !important;
+    background-color: #050505 !important;
+  }
+
+  /* No forzar capas GPU gigantes durante el desplazamiento */
+  .hero,
+  .hero-inner,
+  main {
+    will-change: auto !important;
+    backface-visibility: visible !important;
+  }
+}
+
+/* En móviles pequeños, misma prioridad absoluta al rendimiento */
+@media (max-width: 480px) {
+  .hero-rain,
+  .hero-glass-drops,
+  .hero-glass-trails,
+  .hero-rain-bokeh,
+  .hero-amber-reflections {
+    display: none !important;
+  }
+}
+
 </style>
 </head>
 
