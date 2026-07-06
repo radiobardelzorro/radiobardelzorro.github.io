@@ -1799,6 +1799,197 @@
   }
 }
 
+
+/* =========================================================
+   RADIO BAR DEL ZORRO 3.0 — HERO CINEMATOGRÁFICO
+   Fondo real alojado en GitHub: bar-zorro-fondo.png
+   Mantiene intactos player, metadatos, historial y lógica JS.
+   ========================================================= */
+
+.hero {
+  min-height: 720px;
+  background-color: #050403;
+}
+
+/* La foto real del bar pasa a ser la escena principal */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  opacity: 1;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,.24) 0%,
+      rgba(0,0,0,.34) 28%,
+      rgba(0,0,0,.58) 52%,
+      rgba(0,0,0,.42) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.12) 0%,
+      rgba(0,0,0,.08) 48%,
+      rgba(0,0,0,.72) 100%
+    ),
+    url("bar-zorro-fondo.png") center 38% / cover no-repeat;
+}
+
+/* Velo de integración: mejora contraste sin matar la fotografía */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  opacity: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 17% 48%, rgba(255,92,0,.15), transparent 26%),
+    radial-gradient(circle at 73% 45%, rgba(0,0,0,.08), rgba(0,0,0,.38) 72%),
+    linear-gradient(90deg, rgba(0,0,0,.08), rgba(0,0,0,.22));
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+.hero-inner {
+  min-height: 720px;
+  position: relative;
+  z-index: 3;
+}
+
+/* La foto ya contiene ventanales, bar y neón: quitamos decorado CSS duplicado */
+.hero-bar-window,
+.hero-bar-silhouette,
+.hero-amber-reflections {
+  display: none !important;
+}
+
+/* Lluvia CSS muy sutil solo en escritorio, sobre la escena real */
+.hero-rain {
+  z-index: 1;
+  opacity: .14;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,.35) 28%, #000 52%, #000 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,.35) 28%, #000 52%, #000 100%);
+}
+
+.hero-glass-drops,
+.hero-glass-trails,
+.hero-rain-bokeh {
+  z-index: 1;
+  opacity: .12;
+}
+
+/* Texto y reproductor flotan dentro del bar */
+.hero-story {
+  text-shadow: 0 3px 22px rgba(0,0,0,.88);
+}
+
+.now-card {
+  background:
+    radial-gradient(circle at 95% 0%, rgba(255,83,0,.13), transparent 30%),
+    linear-gradient(145deg, rgba(12,10,9,.91), rgba(3,3,3,.94));
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.72),
+    0 0 0 1px rgba(255,104,0,.08) inset;
+}
+
+/* El zorro superior ya vive en la fotografía: reducimos duplicación visual */
+.fox-stage {
+  width: 220px;
+  height: 150px;
+  margin-bottom: 8px;
+  opacity: .92;
+}
+.fox-stage::before {
+  width: 170px;
+  height: 170px;
+}
+.fox-stage::after {
+  width: 132px;
+  height: 132px;
+}
+.fox-neon {
+  width: 185px;
+  height: 145px;
+}
+
+/* Tablet */
+@media (max-width: 1100px) {
+  .hero::before {
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.22), rgba(0,0,0,.70)),
+      linear-gradient(90deg, rgba(0,0,0,.20), rgba(0,0,0,.42)),
+      url("bar-zorro-fondo.png") 42% center / cover no-repeat;
+  }
+
+  .hero-inner {
+    min-height: auto;
+    padding-block: 54px;
+  }
+}
+
+/* Móvil: composición propia, estática y liviana */
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+  .hero {
+    min-height: auto;
+  }
+
+  .hero::before {
+    background:
+      linear-gradient(180deg,
+        rgba(0,0,0,.18) 0%,
+        rgba(0,0,0,.46) 34%,
+        rgba(0,0,0,.82) 72%,
+        rgba(0,0,0,.94) 100%
+      ),
+      url("bar-zorro-fondo.png") 38% top / auto 58vh no-repeat,
+      #050403;
+  }
+
+  .hero::after {
+    background:
+      radial-gradient(circle at 22% 20%, rgba(255,92,0,.13), transparent 28%),
+      linear-gradient(180deg, transparent 0%, rgba(0,0,0,.22) 42%, rgba(0,0,0,.68) 100%);
+  }
+
+  .hero-inner {
+    padding-block: 34px 42px;
+  }
+
+  .now-card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: linear-gradient(145deg, rgba(14,12,10,.97), rgba(3,3,3,.985));
+  }
+
+  .fox-stage {
+    width: 175px;
+    height: 128px;
+  }
+
+  .fox-neon {
+    width: 150px;
+    height: 120px;
+  }
+}
+
+/* Móvil pequeño: encuadre centrado en neón/bar y lectura segura */
+@media (max-width: 480px) {
+  .hero::before {
+    background:
+      linear-gradient(180deg,
+        rgba(0,0,0,.16) 0%,
+        rgba(0,0,0,.50) 32%,
+        rgba(0,0,0,.88) 66%,
+        #050403 100%
+      ),
+      url("bar-zorro-fondo.png") 34% top / auto 52vh no-repeat,
+      #050403;
+  }
+}
+
 </style>
 </head>
 
