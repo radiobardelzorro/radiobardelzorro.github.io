@@ -2320,6 +2320,144 @@
 }
 </style>
 
+
+<style id="ajuste-final-radio-zorro">
+/* =========================================================
+   AJUSTE FINAL — PC ORDENADO / MÓVIL INTACTO
+   ========================================================= */
+.hero-video-final{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center center;
+  z-index:-4;
+  pointer-events:none;
+  background:#050403;
+}
+
+@media (min-width:1101px){
+  .hero{
+    overflow:hidden;
+    background:#050403;
+  }
+
+  /* Video real llena el hero. Encuadre desplazado suavemente
+     para conservar mejor la zona del zorro y el bar. */
+  .hero-video-final{
+    display:block;
+    object-fit:cover;
+    object-position:42% center;
+  }
+
+  /* Se elimina la foto estática del pseudo-elemento:
+     queda solo un velo para lectura, por encima del video. */
+  .hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:-3 !important;
+    opacity:1 !important;
+    filter:none !important;
+    transform:none !important;
+    background:
+      linear-gradient(90deg,
+        rgba(0,0,0,.54) 0%,
+        rgba(0,0,0,.28) 27%,
+        rgba(0,0,0,.10) 52%,
+        rgba(0,0,0,.18) 72%,
+        rgba(0,0,0,.34) 100%),
+      linear-gradient(180deg,
+        rgba(0,0,0,.08) 0%,
+        rgba(0,0,0,.01) 48%,
+        rgba(0,0,0,.55) 100%) !important;
+  }
+
+  .hero::after{
+    z-index:-2 !important;
+    opacity:1 !important;
+    background:
+      radial-gradient(circle at 14% 50%,rgba(255,92,0,.08),transparent 24%),
+      linear-gradient(180deg,rgba(0,0,0,.01),rgba(0,0,0,.18)) !important;
+  }
+
+  /* Orden general: bloque izquierdo visible y player compacto a la derecha. */
+  .hero-inner{
+    width:min(1500px,calc(100% - 64px)) !important;
+    margin:0 auto !important;
+    padding-left:0 !important;
+    padding-right:0 !important;
+    grid-template-columns:minmax(360px,.82fr) minmax(560px,1.18fr) !important;
+    gap:clamp(34px,4vw,78px) !important;
+    align-items:center !important;
+  }
+
+  .hero-copy{
+    min-width:0 !important;
+    transform:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    justify-self:start !important;
+  }
+
+  /* Player aprox. 18% menor, sin deformar su contenido. */
+  .now-card{
+    width:min(82%,760px) !important;
+    max-width:760px !important;
+    justify-self:end !important;
+    margin:0 !important;
+    transform:none !important;
+    padding:clamp(22px,2vw,34px) !important;
+    background:
+      radial-gradient(circle at 95% 0%,rgba(255,83,0,.09),transparent 30%),
+      linear-gradient(145deg,rgba(12,10,9,.78),rgba(3,3,3,.88)) !important;
+    backdrop-filter:blur(3px);
+    -webkit-backdrop-filter:blur(3px);
+  }
+
+  .now-main{
+    grid-template-columns:minmax(145px,185px) minmax(0,1fr) !important;
+    gap:clamp(20px,2vw,34px) !important;
+    align-items:center !important;
+  }
+
+  .cover{
+    width:min(185px,100%) !important;
+    max-width:185px !important;
+    aspect-ratio:1/1 !important;
+  }
+
+  .track-title{
+    font-size:clamp(27px,2.45vw,46px) !important;
+    line-height:1.02 !important;
+  }
+
+  .track-artist{
+    font-size:clamp(21px,1.9vw,34px) !important;
+  }
+
+  /* El video ya trae movimiento; evitamos lluvia CSS duplicada en PC. */
+  .hero-rain,
+  .hero-glass-drops,
+  .hero-glass-trails,
+  .hero-rain-bokeh,
+  .hero-amber-reflections,
+  .hero-bar-window,
+  .hero-bar-silhouette{
+    display:none !important;
+  }
+}
+
+/* Móvil/tablet: conservar exactamente la composición estática actual. */
+@media (max-width:1100px){
+  .hero-video-final{display:none !important;}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero-video-final{display:none !important;}
+}
+</style>
+
 </head>
 
 <body>
@@ -2359,6 +2497,10 @@
 
     <!-- HERO -->
     <section class="hero" id="inicio">
+    <video class="hero-video-final" autoplay muted loop playsinline preload="auto"
+      poster="bar-zorro-fondo.png" aria-hidden="true">
+      <source src="bar-zorro-video-loop-final.mp4" type="video/mp4">
+    </video>
     <!-- VIDEO CINEMATOGRÁFICO DE FONDO -->
     <video
       class="hero-video"
