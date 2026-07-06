@@ -1167,40 +1167,61 @@
     .hero-rain {
       position:absolute; z-index:0; inset:0; pointer-events:none;
       overflow:hidden;
-      opacity:.34;
+      opacity:.27;
+      contain:paint;
+      transform:translateZ(0);
       -webkit-mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.92) 43%,rgba(0,0,0,.28) 72%,transparent 91%);
       mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.92) 43%,rgba(0,0,0,.28) 72%,transparent 91%);
     }
 
-    /* lluvia lejana: trazos finos, casi perdidos en la noche */
+    /* lluvia lejana: fina, irregular y de desplazamiento continuo */
     .hero-rain::before {
-      content:""; position:absolute; inset:-18% -8%;
+      content:""; position:absolute;
+      inset:-55% -18%;
       background:
         repeating-linear-gradient(
           101deg,
-          transparent 0 31px,
-          rgba(205,218,224,.12) 32px,
-          rgba(205,218,224,.035) 33px,
-          transparent 35px 69px
+          transparent 0 43px,
+          rgba(205,218,224,.075) 44px,
+          transparent 45px 97px
+        ),
+        repeating-linear-gradient(
+          99deg,
+          transparent 0 79px,
+          rgba(205,218,224,.045) 80px,
+          transparent 81px 163px
         );
-      filter:blur(.15px);
-      animation:rainFar 7.5s linear infinite;
+      background-size:137px 211px, 223px 307px;
+      opacity:.78;
+      filter:blur(.18px);
+      will-change:transform;
+      transform:translate3d(0,0,0);
+      animation:rainFar 18s linear infinite;
     }
 
-    /* lluvia cercana: menos líneas, algo más luminosas */
+    /* lluvia cercana: escasa, algo más luminosa y a otra velocidad */
     .hero-rain::after {
-      content:""; position:absolute; inset:-22% -10%;
+      content:""; position:absolute;
+      inset:-60% -20%;
       background:
         repeating-linear-gradient(
           100deg,
-          transparent 0 83px,
-          rgba(232,239,241,.16) 84px,
-          rgba(232,239,241,.045) 85px,
-          transparent 88px 151px
+          transparent 0 113px,
+          rgba(232,239,241,.105) 114px,
+          transparent 116px 241px
+        ),
+        repeating-linear-gradient(
+          102deg,
+          transparent 0 167px,
+          rgba(232,239,241,.065) 168px,
+          transparent 170px 329px
         );
-      opacity:.72;
-      filter:blur(.25px);
-      animation:rainNear 4.8s linear infinite;
+      background-size:251px 347px, 379px 463px;
+      opacity:.62;
+      filter:blur(.22px);
+      will-change:transform;
+      transform:translate3d(0,0,0);
+      animation:rainNear 13s linear infinite;
     }
 
     /* gotas adheridas al ventanal */
@@ -1221,7 +1242,9 @@
         radial-gradient(ellipse 2px 8px at 68% 58%, rgba(225,235,238,.13) 0 30%, transparent 70%),
         radial-gradient(ellipse 2px 10px at 77% 34%, rgba(225,235,238,.11) 0 30%, transparent 70%);
       filter:drop-shadow(0 1px 1px rgba(255,255,255,.05));
-      animation:glassDrops 13s ease-in-out infinite;
+      will-change:transform,opacity;
+      transform:translate3d(0,0,0);
+      animation:glassDrops 28s linear infinite;
     }
 
     /* surcos verticales de agua que resbalan por el vidrio */
@@ -1237,7 +1260,9 @@
       filter:blur(.45px);
       -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 12%,#000 82%,transparent 100%);
       mask-image:linear-gradient(180deg,transparent 0%,#000 12%,#000 82%,transparent 100%);
-      animation:trailBreath 8s ease-in-out infinite;
+      will-change:transform,opacity;
+      transform:translate3d(0,0,0);
+      animation:trailFlow 34s linear infinite;
     }
 
     /* reflejos cálidos desenfocados detrás del cristal */
@@ -1252,29 +1277,45 @@
         radial-gradient(circle at 57% 36%, rgba(255,174,83,.16) 0 2px, rgba(255,88,0,.05) 6px, transparent 21px);
       filter:blur(2.8px);
       mix-blend-mode:screen;
-      animation:bokehPulse 10s ease-in-out infinite;
+      will-change:opacity,transform;
+      transform:translateZ(0);
+      animation:bokehPulse 22s ease-in-out infinite;
     }
 
     @keyframes rainFar {
-      from { transform:translate3d(0,-42px,0); }
-      to   { transform:translate3d(-34px,72px,0); }
+      0%   { transform:translate3d(0,-8%,0); }
+      100% { transform:translate3d(-4%,18%,0); }
     }
     @keyframes rainNear {
-      from { transform:translate3d(0,-70px,0); }
-      to   { transform:translate3d(-48px,105px,0); }
+      0%   { transform:translate3d(0,-10%,0); }
+      100% { transform:translate3d(-5%,22%,0); }
     }
     @keyframes glassDrops {
-      0%,100% { transform:translateY(-5px); opacity:.34; }
-      45%     { transform:translateY(13px); opacity:.46; }
-      70%     { transform:translateY(21px); opacity:.38; }
+      0%   { transform:translate3d(0,-7%,0); opacity:.18; }
+      12%  { opacity:.38; }
+      82%  { opacity:.34; }
+      100% { transform:translate3d(-.3%,18%,0); opacity:.08; }
     }
-    @keyframes trailBreath {
-      0%,100% { transform:translateY(-7px); opacity:.14; }
-      50%     { transform:translateY(18px); opacity:.24; }
+    @keyframes trailFlow {
+      0%   { transform:translate3d(0,-9%,0); opacity:.10; }
+      18%  { opacity:.19; }
+      85%  { opacity:.16; }
+      100% { transform:translate3d(0,20%,0); opacity:.05; }
     }
     @keyframes bokehPulse {
-      0%,100% { opacity:.38; transform:scale(1); }
-      50%     { opacity:.54; transform:scale(1.015); }
+      0%,100% { opacity:.38; transform:translateZ(0) scale(1); }
+      50%     { opacity:.48; transform:translateZ(0) scale(1.008); }
+    }
+
+
+    /* Composición suave: evita repintados bruscos en la lluvia */
+    .hero-rain::before,
+    .hero-rain::after,
+    .hero-glass-drops,
+    .hero-glass-trails,
+    .hero-rain-bokeh {
+      backface-visibility:hidden;
+      -webkit-backface-visibility:hidden;
     }
 
     .hero-amber-reflections {
@@ -1530,7 +1571,106 @@
         letter-spacing: 0.25em;
       }
     }
-  </style>
+  
+/* =========================================================
+   RADIO BAR DEL ZORRO — OPTIMIZACIÓN ADAPTATIVA PARA MÓVIL
+   Mantiene la atmósfera, reduce composición y repintados.
+   ========================================================= */
+@media (max-width: 768px), (pointer: coarse) {
+  /* Desactiva las capas atmosféricas más costosas en pantallas táctiles/móviles */
+  .rain-far,
+  .rain-near,
+  .glass-drops,
+  .rain-glass,
+  .window-drops,
+  .water-trails,
+  .rain-trails,
+  .bokeh,
+  .bokeh-layer,
+  .amber-bokeh,
+  .moving-reflections,
+  .reflection-layer {
+    animation: none !important;
+  }
+
+  /* Si existen varias capas de lluvia, ocultamos las secundarias */
+  .rain-far,
+  .glass-drops,
+  .window-drops,
+  .water-trails,
+  .rain-trails,
+  .bokeh,
+  .bokeh-layer,
+  .amber-bokeh,
+  .moving-reflections {
+    display: none !important;
+  }
+
+  /* Conservamos una sola capa principal, mucho más barata */
+  .rain-near,
+  .rain-glass,
+  .rain-layer,
+  .rain {
+    opacity: 0.20 !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    will-change: transform;
+    transform: translateZ(0);
+    animation-duration: 24s !important;
+    animation-timing-function: linear !important;
+  }
+
+  /* Reflejos ámbar: presentes pero estáticos */
+  .reflection-layer,
+  .amber-reflection,
+  .bar-glow,
+  .window-glow {
+    animation: none !important;
+    filter: none !important;
+    will-change: auto !important;
+  }
+
+  /* Evita filtros caros sobre grandes superficies */
+  .hero::before,
+  .hero::after,
+  .atmosphere::before,
+  .atmosphere::after,
+  .bar-atmosphere::before,
+  .bar-atmosphere::after {
+    backdrop-filter: none !important;
+  }
+}
+
+/* Móviles pequeños: aún más liviano */
+@media (max-width: 480px) {
+  .rain-near,
+  .rain-glass,
+  .rain-layer,
+  .rain {
+    opacity: 0.14 !important;
+    animation-duration: 30s !important;
+  }
+}
+
+/* Respeta a usuarios que piden menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .rain-far,
+  .rain-near,
+  .glass-drops,
+  .rain-glass,
+  .window-drops,
+  .water-trails,
+  .rain-trails,
+  .bokeh,
+  .bokeh-layer,
+  .amber-bokeh,
+  .moving-reflections,
+  .reflection-layer {
+    animation: none !important;
+  }
+}
+
+</style>
 </head>
 
 <body>
