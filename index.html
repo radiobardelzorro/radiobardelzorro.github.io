@@ -13,6 +13,9 @@
 
   <meta name="theme-color" content="#070707">
 
+  <link rel="icon" type="image/png" href="zorro-nocturno.png">
+  <link rel="apple-touch-icon" href="zorro-nocturno.png">
+
   <style>
     :root {
       --bg: #050505;
@@ -1832,7 +1835,7 @@
       rgba(0,0,0,.08) 48%,
       rgba(0,0,0,.72) 100%
     ),
-    url("bar-zorro-fondo.png") center 38% / cover no-repeat;
+    url("bar-zorro-fondo.png") 38% center / cover no-repeat;
 }
 
 /* Velo de integración: mejora contraste sin matar la fotografía */
@@ -1988,6 +1991,15 @@
       url("bar-zorro-fondo.png") 34% top / auto 52vh no-repeat,
       #050403;
   }
+}
+
+
+/* =========================================================
+   AJUSTE FINAL HERO — elimina el zorro duplicado del contenido
+   La escena fotográfica conserva su propio neón.
+   ========================================================= */
+.hero-story > .fox-stage {
+  display: none !important;
 }
 
 </style>
