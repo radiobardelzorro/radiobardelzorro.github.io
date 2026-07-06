@@ -13,7 +13,8 @@
 
   <meta name="theme-color" content="#070707">
 
-  <link rel="icon" type="image/png" href="zorro-nocturno.png">
+  <link rel="icon" type="image/svg+xml" href="favicon-zorro.svg">
+  <link rel="alternate icon" type="image/png" href="zorro-nocturno.png">
   <link rel="apple-touch-icon" href="zorro-nocturno.png">
 
   <style>
@@ -1835,7 +1836,7 @@
       rgba(0,0,0,.08) 48%,
       rgba(0,0,0,.72) 100%
     ),
-    url("bar-zorro-fondo.png") 38% center / cover no-repeat;
+    url("bar-zorro-fondo.png") center 38% / cover no-repeat;
 }
 
 /* Velo de integración: mejora contraste sin matar la fotografía */
@@ -1995,12 +1996,17 @@
 
 
 /* =========================================================
-   AJUSTE FINAL HERO — elimina el zorro duplicado del contenido
-   La escena fotográfica conserva su propio neón.
+   AJUSTE FINAL DE COMPOSICIÓN
+   Oculta el zorro duplicado del hero, pero conserva exactamente
+   su espacio geométrico para no alterar el layout en PC/móvil.
    ========================================================= */
 .hero-story > .fox-stage {
-  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
+
+/* El neón real de la fotografía queda como protagonista.
+   No alteramos tamaños, grid, player ni lógica responsive. */
 
 </style>
 </head>
