@@ -506,6 +506,7 @@
 
     .vinyl-main {
       position: relative;
+      overflow: hidden;
       padding: 14px 18px;
       border-radius: 13px;
       background:
@@ -569,12 +570,12 @@
 
     .vinyl-top-row {
       display: grid;
-      grid-template-columns: auto minmax(150px, 1fr) auto minmax(138px, 150px);
+      grid-template-columns: auto minmax(140px, 1fr) auto minmax(112px, 126px);
       grid-template-areas:
         "disc info fox meta"
         "disc eq   eq  meta";
       align-items: center;
-      gap: 8px 18px;
+      gap: 8px 14px;
       min-width: 0;
     }
 
@@ -827,12 +828,13 @@
       display: grid;
       grid-template-columns: auto 1fr;
       align-items: center;
-      gap: 12px;
+      gap: 7px;
+      min-width: 0;
     }
 
     .volume-icon {
       color: #d7d1cc;
-      font-size: 19px;
+      font-size: 13px;
     }
 
     input[type="range"] {
@@ -1831,13 +1833,11 @@
 
               <div class="vinyl-meta">
 
-                <div class="vinyl-tech" id="vinylTech">MP3 · 128 KBPS · STEREO</div>
+                <div class="vinyl-tech" id="vinylTech">MP3 · 128 KBPS</div>
 
-                <div class="vinyl-row">
-                  <svg class="vinyl-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12Zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2V19.2c0-3.2-6.4-4.8-9.6-4.8Z"></path>
-                  </svg>
-                  <span id="listenersText">OYENTES: --</span>
+                <div class="vinyl-row vinyl-dj-row" id="vinylDjRow">
+                  <span class="dj-led" id="djLed" aria-hidden="true"></span>
+                  <span id="djLabelText">AutoDJ</span>
                 </div>
 
                 <div class="vinyl-row vinyl-dj-row" id="vinylDjRow">
@@ -2117,6 +2117,7 @@
   <audio
     id="radioAudio"
     preload="none"
+    crossorigin="anonymous"
   ></audio>
 
   <script>
@@ -2155,7 +2156,6 @@
 
     const historyList = document.getElementById("historyList");
     const vinylTech = document.getElementById("vinylTech");
-    const listenersText = document.getElementById("listenersText");
     const streamInfo = document.getElementById("streamInfo");
 
     const vinylDisc = document.getElementById("vinylDisc");
@@ -2174,6 +2174,7 @@
     let isPlaying = false;
     let streamIndex = 0;
     let userRequestedPlay = false;
+    let corsRetryDone = false;
 
     audio.src = STREAM_CANDIDATES[streamIndex];
     audio.volume = Number(volumeControl.value);
@@ -2358,23 +2359,8 @@
         ? String(data.bitrate).replace(/[^\d]/g, "")
         : "128";
 
-      const listeners =
-        data.listeners ??
-        data.ulistener ??
-        data.listener ??
-        "--";
-
-      /*
-        La API no entrega sample rate ni canales, así que
-        "STEREO" queda como texto fijo (supuesto razonable
-        para la mayoría de streams de radio web). Si tu
-        proveedor entrega esos datos en otro endpoint,
-        podemos reemplazar esto por valores reales.
-      */
       vinylTech.textContent =
-        `MP3 · ${bitrate || "128"} KBPS · STEREO`;
-
-      listenersText.textContent = `OYENTES: ${listeners}`;
+        `MP3 · ${bitrate || "128"} KBPS`;
 
       streamInfo.textContent =
         `MP3 · ${bitrate || "128"} KBPS informado por la señal.`;
@@ -2459,6 +2445,40 @@
       streamIndex += 1;
 
       if (streamIndex >= STREAM_CANDIDATES.length) {
+        /*
+          Red de seguridad: si el stream falló al cargar en
+          modo CORS (atributo crossorigin) y nunca llegamos a
+          crear el grafo de audio, reintentamos una vez sin el
+          atributo. Perdemos el visualizador real (queda el
+          simulado), pero garantizamos que la radio suene.
+        */
+        if (
+          !corsRetryDone &&
+          audioCtx === null &&
+          audio.hasAttribute("crossorigin")
+        ) {
+          corsRetryDone = true;
+          streamCorsAllowed = false;
+          audio.removeAttribute("crossorigin");
+          streamIndex = 0;
+          audio.src = STREAM_CANDIDATES[streamIndex];
+
+          console.info(
+            "Reintentando el stream sin modo CORS (visualizador simulado)."
+          );
+
+          if (userRequestedPlay) {
+            try {
+              await audio.play();
+              isPlaying = true;
+              updatePlayUI();
+              return;
+            } catch (error) {
+              console.error("Tampoco funcionó sin CORS:", error);
+            }
+          }
+        }
+
         streamIndex = 0;
         userRequestedPlay = false;
         isPlaying = false;
