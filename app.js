@@ -18,7 +18,7 @@
       "https://sonic-us.arkeo.cl/stream/8054"
     ];
 
-    const DEFAULT_COVER = "zorro-nocturno.png";
+    const DEFAULT_COVER = "zorro-nocturno.webp";
 
     const audio = document.getElementById("radioAudio");
     const playButton = document.getElementById("playButton");
@@ -766,12 +766,78 @@
     });
 
     /* ==========================================
+       SCROLL SPY
+       Marca automáticamente la sección visible
+       en la navegación mientras haces scroll.
+    ========================================== */
+
+    function setupScrollSpy() {
+      const sections = document.querySelectorAll("section[id]");
+
+      if (!sections.length || !navLinks.length) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const id = entry.target.getAttribute("id");
+              const matchingLink = document.querySelector(
+                `.main-nav a[href="#${id}"]`
+              );
+
+              if (matchingLink) {
+                navLinks.forEach((link) =>
+                  link.classList.remove("active")
+                );
+                matchingLink.classList.add("active");
+              }
+            }
+          });
+        },
+        {
+          rootMargin: "-30% 0px -60% 0px",
+          threshold: 0
+        }
+      );
+
+      sections.forEach((section) => observer.observe(section));
+    }
+
+    /* ==========================================
+       BRILLO DE LECTURA
+       Toggle que sube el brillo de las secciones
+       de contenido (historial, atmósferas, about)
+       sin tocar el hero ni el reproductor.
+    ========================================== */
+
+    const brightnessToggle = document.getElementById("brightnessToggle");
+    let isBrightMode = false;
+
+    function toggleBrightness() {
+      isBrightMode = !isBrightMode;
+      document.body.classList.toggle("bright-mode", isBrightMode);
+
+      if (brightnessToggle) {
+        brightnessToggle.textContent = isBrightMode ? "☾" : "☀";
+        brightnessToggle.setAttribute(
+          "aria-label",
+          isBrightMode ? "Volver al modo nocturno" : "Aumentar brillo de lectura"
+        );
+      }
+    }
+
+    if (brightnessToggle) {
+      brightnessToggle.addEventListener("click", toggleBrightness);
+    }
+
+    /* ==========================================
        INIT
     ========================================== */
 
     buildFooterWave();
     buildEqBars();
     setEqBarsIdle();
+    setupScrollSpy();
     loadRadioData();
 
     /*
