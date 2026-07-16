@@ -1714,33 +1714,62 @@
 
   .main-nav {
     position: fixed;
-    inset: 0;
-    z-index: 105;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 200;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0;
-    background: rgba(4, 4, 4, 0.96);
-    backdrop-filter: blur(22px);
+    gap: 8px;
+    background: #050505;
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
     transition: opacity 0.3s ease, visibility 0.3s ease;
   }
 
   .main-nav.is-open {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
   }
 
   .main-nav a {
-    padding: 22px 0;
-    font-size: 18px;
-    letter-spacing: 0.12em;
+    padding: 20px 0;
+    font-size: 20px;
+    letter-spacing: 0.14em;
+    color: var(--white);
+  }
+
+  .main-nav a.active {
+    color: var(--orange);
   }
 
   .main-nav a.active::after {
-    bottom: 12px;
+    display: none;
+  }
+
+  /* El botón de cerrar (hamburguesa en X) debe quedar sobre el overlay */
+  .hamburger {
+    position: relative;
+    z-index: 210;
+  }
+
+  body.menu-open {
+    overflow: hidden;
+  }
+
+  body.menu-open .site-header {
+    z-index: 205;
+    background: transparent;
+    backdrop-filter: none;
+    border-bottom-color: transparent;
   }
 }
 
