@@ -6,7 +6,7 @@
   página no queda en blanco si la conexión falla brevemente.
 */
 
-const CACHE_NAME = "bar-del-zorro-v1";
+const CACHE_NAME = "bar-del-zorro-v2";
 
 const SHELL_ASSETS = [
   "/",
