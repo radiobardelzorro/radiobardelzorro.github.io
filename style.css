@@ -315,6 +315,22 @@
 
     .hero-title span {
       color: var(--orange);
+      display: inline-block;
+      animation: title-neon-breath 4s ease-in-out infinite;
+    }
+
+    @keyframes title-neon-breath {
+      0%, 100% {
+        text-shadow:
+          0 0 6px rgba(255, 104, 0, 0.35),
+          0 0 14px rgba(255, 104, 0, 0.2);
+      }
+      50% {
+        text-shadow:
+          0 0 12px rgba(255, 104, 0, 0.7),
+          0 0 28px rgba(255, 104, 0, 0.45),
+          0 0 42px rgba(255, 70, 0, 0.28);
+      }
     }
 
     .hero-tagline {
@@ -469,6 +485,40 @@
         var(--shadow),
         inset 0 1px 0 rgba(255, 255, 255, 0.10),
         inset 0 -2px 0 rgba(0, 0, 0, 0.6);
+    }
+
+    /*
+      Borde de neón sutil: un degradado naranja tenue que
+      recorre lentamente el contorno del reproductor, detrás
+      de él (z-index -1), sin tapar nada del contenido.
+    */
+    .vinyl-player::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      z-index: -1;
+      border-radius: 19px;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 104, 0, 0.5),
+        rgba(255, 138, 31, 0.7),
+        rgba(255, 104, 0, 0.15),
+        rgba(255, 104, 0, 0.5)
+      );
+      background-size: 200% 100%;
+      animation: vinyl-neon-run 6s linear infinite;
+      opacity: 0.55;
+    }
+
+    @keyframes vinyl-neon-run {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .vinyl-player::before {
+        animation: none;
+      }
     }
 
     .vinyl-main {
@@ -992,6 +1042,23 @@
       place-items: center;
       color: var(--orange);
       font-size: 36px;
+      animation: atmo-glow 4s ease-in-out infinite;
+    }
+
+    .atmo-card:nth-child(1) .atmo-icon { animation-delay: 0s; }
+    .atmo-card:nth-child(2) .atmo-icon { animation-delay: 1s; }
+    .atmo-card:nth-child(3) .atmo-icon { animation-delay: 2s; }
+    .atmo-card:nth-child(4) .atmo-icon { animation-delay: 3s; }
+
+    @keyframes atmo-glow {
+      0%, 100% {
+        text-shadow: 0 0 4px rgba(255, 104, 0, 0.4);
+        transform: scale(1);
+      }
+      50% {
+        text-shadow: 0 0 14px rgba(255, 104, 0, 0.85), 0 0 24px rgba(255, 70, 0, 0.45);
+        transform: scale(1.08);
+      }
     }
 
     .atmo-card h3 {
@@ -1896,5 +1963,30 @@
     width: 34px;
     height: 34px;
     font-size: 15px;
+  }
+}
+
+/* =========================
+   REVEAL AL SCROLL
+   Los paneles aparecen deslizándose suavemente
+   cuando entran en pantalla.
+========================= */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
