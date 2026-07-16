@@ -316,21 +316,17 @@
     .hero-title span {
       color: var(--orange);
       display: inline-block;
+      position: relative;
+      text-shadow:
+        0 0 10px rgba(255, 104, 0, 0.45),
+        0 0 22px rgba(255, 104, 0, 0.25);
       animation: title-neon-breath 4s ease-in-out infinite;
+      will-change: opacity;
     }
 
     @keyframes title-neon-breath {
-      0%, 100% {
-        text-shadow:
-          0 0 6px rgba(255, 104, 0, 0.35),
-          0 0 14px rgba(255, 104, 0, 0.2);
-      }
-      50% {
-        text-shadow:
-          0 0 12px rgba(255, 104, 0, 0.7),
-          0 0 28px rgba(255, 104, 0, 0.45),
-          0 0 42px rgba(255, 70, 0, 0.28);
-      }
+      0%, 100% { opacity: 0.92; }
+      50% { opacity: 1; }
     }
 
     .hero-tagline {
@@ -488,9 +484,11 @@
     }
 
     /*
-      Borde de neón sutil: un degradado naranja tenue que
-      recorre lentamente el contorno del reproductor, detrás
-      de él (z-index -1), sin tapar nada del contenido.
+      Brillo naranja sutil y estático alrededor del reproductor.
+      Antes esto era una animación de borde que recorría el marco,
+      pero animar background-position sobre el video de fondo era
+      demasiado costoso y cortaba el video. Ahora es un halo fijo
+      que da el toque de "equipo encendido" sin costo de repintado.
     */
     .vinyl-player::before {
       content: "";
@@ -499,26 +497,12 @@
       z-index: -1;
       border-radius: 19px;
       background: linear-gradient(
-        90deg,
-        rgba(255, 104, 0, 0.5),
-        rgba(255, 138, 31, 0.7),
-        rgba(255, 104, 0, 0.15),
-        rgba(255, 104, 0, 0.5)
+        120deg,
+        rgba(255, 104, 0, 0.4),
+        rgba(255, 138, 31, 0.15) 45%,
+        rgba(255, 104, 0, 0.35)
       );
-      background-size: 200% 100%;
-      animation: vinyl-neon-run 6s linear infinite;
-      opacity: 0.55;
-    }
-
-    @keyframes vinyl-neon-run {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 200% 50%; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .vinyl-player::before {
-        animation: none;
-      }
+      opacity: 0.5;
     }
 
     .vinyl-main {
@@ -1043,6 +1027,7 @@
       color: var(--orange);
       font-size: 36px;
       animation: atmo-glow 4s ease-in-out infinite;
+      will-change: opacity;
     }
 
     .atmo-card:nth-child(1) .atmo-icon { animation-delay: 0s; }
@@ -1051,14 +1036,8 @@
     .atmo-card:nth-child(4) .atmo-icon { animation-delay: 3s; }
 
     @keyframes atmo-glow {
-      0%, 100% {
-        text-shadow: 0 0 4px rgba(255, 104, 0, 0.4);
-        transform: scale(1);
-      }
-      50% {
-        text-shadow: 0 0 14px rgba(255, 104, 0, 0.85), 0 0 24px rgba(255, 70, 0, 0.45);
-        transform: scale(1.08);
-      }
+      0%, 100% { opacity: 0.75; }
+      50% { opacity: 1; }
     }
 
     .atmo-card h3 {
