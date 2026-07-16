@@ -833,6 +833,35 @@
     }
 
     /* ==========================================
+       REVEAL AL SCROLL
+       Los paneles con clase .reveal aparecen
+       deslizándose cuando entran en pantalla.
+    ========================================== */
+
+    function setupScrollReveal() {
+      const revealEls = document.querySelectorAll(".reveal");
+
+      if (!revealEls.length) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: "0px 0px -12% 0px",
+          threshold: 0.1
+        }
+      );
+
+      revealEls.forEach((el) => observer.observe(el));
+    }
+
+    /* ==========================================
        INIT
     ========================================== */
 
@@ -840,6 +869,7 @@
     buildEqBars();
     setEqBarsIdle();
     setupScrollSpy();
+    setupScrollReveal();
     loadRadioData();
 
     /*
