@@ -742,12 +742,14 @@
         hamburgerBtn.classList.remove("is-open");
         hamburgerBtn.setAttribute("aria-expanded", "false");
       }
+      document.body.classList.remove("menu-open");
     }
 
     function toggleMenu() {
       const isOpen = mainNav.classList.toggle("is-open");
       hamburgerBtn.classList.toggle("is-open", isOpen);
       hamburgerBtn.setAttribute("aria-expanded", String(isOpen));
+      document.body.classList.toggle("menu-open", isOpen);
     }
 
     if (hamburgerBtn) {
