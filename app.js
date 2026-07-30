@@ -955,7 +955,7 @@
       const RESET_MS = 8000;
 
       const hotspots = {
-        top: document.getElementById("vinylDisc"),
+        top: document.getElementById("vinylDiscWrap"),
         bottom: document.getElementById("vinylEqBar"),
         left: document.getElementById("eggHotLeft"),
         right: document.getElementById("eggHotRight")
