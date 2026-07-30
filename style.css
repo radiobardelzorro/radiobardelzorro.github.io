@@ -2208,3 +2208,140 @@
           padding: 8px 16px;
         }
       }
+
+      /* ==========================================
+         HUEVO DE PASCUA — SERGIO
+         4 clics en cruz sobre el reproductor:
+         arriba (disco) → abajo (ecualizador) →
+         izquierda (‹) → derecha (›)
+      ========================================== */
+
+      .egg2-cross-layer {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+      }
+
+      .egg2-cross-svg {
+        width: 220px;
+        height: 300px;
+        overflow: visible;
+      }
+
+      .egg2-cross-svg path,
+      .egg2-cross-svg circle {
+        stroke: #fff;
+        filter:
+          drop-shadow(0 0 6px rgba(255, 255, 255, 0.9))
+          drop-shadow(0 0 16px rgba(255, 235, 200, 0.6));
+      }
+
+      .egg2-cross-vertical,
+      .egg2-cross-horizontal {
+        fill: none;
+        stroke-width: 5;
+        stroke-linecap: round;
+      }
+
+      .egg2-cross-dot {
+        fill: #fff;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .egg2-cross-dot.show {
+        opacity: 1;
+      }
+
+      .egg2-reveal {
+        position: fixed;
+        inset: 0;
+        z-index: 700;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(3, 2, 1, 0.86);
+        padding: 20px;
+      }
+
+      .egg2-reveal.show {
+        display: flex;
+      }
+
+      .egg2-reveal-panel {
+        position: relative;
+        width: min(720px, 92vw);
+        opacity: 0;
+        transform: scale(0.92);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+
+      .egg2-reveal.show .egg2-reveal-panel {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .egg2-reveal-img {
+        width: 100%;
+        display: block;
+        border-radius: 14px;
+        border: 2px solid rgba(255, 200, 120, 0.4);
+        box-shadow:
+          0 0 50px rgba(255, 150, 50, 0.25),
+          0 30px 80px rgba(0, 0, 0, 0.6);
+      }
+
+      .egg2-reveal-msg {
+        text-align: center;
+        margin-top: 18px;
+        font-size: 17px;
+        color: var(--white);
+        letter-spacing: 0.02em;
+      }
+
+      .egg2-reveal-close {
+        position: absolute;
+        top: -14px;
+        right: -14px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: #100c09;
+        border: 1px solid var(--line);
+        color: var(--white);
+        font-size: 16px;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+      }
+
+      .egg2-confetti-layer {
+        position: fixed;
+        inset: 0;
+        z-index: 690;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .egg2-confetti-piece {
+        position: absolute;
+        top: -20px;
+        opacity: 0.9;
+        animation-name: egg2-confetti-fall;
+        animation-timing-function: linear;
+        animation-fill-mode: forwards;
+      }
+
+      @keyframes egg2-confetti-fall {
+        to { transform: translateY(115vh) rotate(360deg); }
+      }
+
+      @media (max-width: 640px) {
+        .egg2-cross-svg { width: 150px; height: 210px; }
+        .egg2-reveal-msg { font-size: 14px; }
+      }
