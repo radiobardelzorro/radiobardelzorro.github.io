@@ -234,13 +234,13 @@
     function updateSignalMeta(data) {
       const bitrate = data.bitrate
         ? String(data.bitrate).replace(/[^\d]/g, "")
-        : "128";
+        : "320";
 
       vinylTech.textContent =
-        `MP3 · ${bitrate || "128"} KBPS`;
+        `MP3 · ${bitrate || "320"} KBPS`;
 
       streamInfo.textContent =
-        `MP3 · ${bitrate || "128"} KBPS informado por la señal.`;
+        `MP3 · ${bitrate || "320"} KBPS informado por la señal.`;
     }
 
     function updateHistory(history) {
