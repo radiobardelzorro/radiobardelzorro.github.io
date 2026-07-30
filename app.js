@@ -862,10 +862,93 @@
     }
 
     /* ==========================================
+       HUEVO DE PASCUA
+       17 clics en el zorro del footer despiertan
+       al zorro de neón, que saluda y se despide.
+    ========================================== */
+
+    function setupEasterEgg() {
+      const TARGET = 17;
+      const WALK_IN_MS = 1400;
+      const GREET_MS = 4600;
+      const WALK_OUT_MS = 1200;
+      const SWAP_TIMES_MS = [1300, 2700];
+      const MESSAGES = [
+        "Hola, Martin",
+        "Encontraste el rincón secreto \u{1F98A}",
+        "¡Nos vemos, Martin! \u{1F44B}"
+      ];
+
+      const logo = document.getElementById("footerFox");
+      const scene = document.getElementById("eggScene");
+      const foxStage = document.getElementById("eggFoxStage");
+      const bubbleText = document.getElementById("eggBubbleText");
+
+      if (!logo || !scene || !foxStage || !bubbleText) return;
+
+      let count = 0;
+      let resetTimer = null;
+
+      logo.addEventListener("click", () => {
+        if (count >= TARGET) return;
+        count++;
+
+        logo.classList.remove("egg-pulse");
+        void logo.offsetWidth;
+        logo.classList.add("egg-pulse");
+
+        clearTimeout(resetTimer);
+        resetTimer = setTimeout(() => {
+          count = 0;
+        }, 4000);
+
+        if (count === TARGET) {
+          clearTimeout(resetTimer);
+          playEggSequence();
+        }
+      });
+
+      function playEggSequence() {
+        scene.classList.add("show");
+        bubbleText.textContent = MESSAGES[0];
+        foxStage.classList.add("walk-in");
+
+        setTimeout(() => {
+          foxStage.classList.remove("walk-in");
+          foxStage.classList.add("greet");
+          scene.classList.add("egg-greeting");
+
+          SWAP_TIMES_MS.forEach((t, i) => {
+            setTimeout(() => {
+              bubbleText.classList.add("egg-swap");
+              setTimeout(() => {
+                bubbleText.textContent = MESSAGES[i + 1];
+                bubbleText.classList.remove("egg-swap");
+              }, 180);
+            }, t);
+          });
+
+          setTimeout(() => {
+            foxStage.classList.remove("greet");
+            scene.classList.remove("egg-greeting");
+            foxStage.classList.add("walk-out");
+
+            setTimeout(() => {
+              scene.classList.remove("show");
+              foxStage.classList.remove("walk-out");
+              count = 0;
+            }, WALK_OUT_MS);
+          }, GREET_MS);
+        }, WALK_IN_MS);
+      }
+    }
+
+    /* ==========================================
        INIT
     ========================================== */
 
     buildFooterWave();
+    setupEasterEgg();
     buildEqBars();
     setEqBarsIdle();
     setupScrollSpy();
