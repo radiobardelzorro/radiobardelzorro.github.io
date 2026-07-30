@@ -1542,9 +1542,23 @@
         border-radius: 16px;
       }
 
-      .vinyl-grille,
-      .vinyl-chevron {
+      .vinyl-grille {
         display: none;
+      }
+
+      /*
+        Los chevrons decorativos se ocultan en móvil, pero
+        eggHotLeft/eggHotRight deben seguir existiendo y ser
+        clickeables (invisibles) para que el huevo de pascua
+        de Sergio también funcione en celular.
+      */
+      .vinyl-chevron:not(#eggHotLeft):not(#eggHotRight) {
+        display: none;
+      }
+
+      #eggHotLeft,
+      #eggHotRight {
+        opacity: 0;
       }
 
       .vinyl-main {
@@ -1863,9 +1877,17 @@
     height: 56px;
   }
 
-  .vinyl-grille,
-  .vinyl-chevron {
+  .vinyl-grille {
     display: none;
+  }
+
+  .vinyl-chevron:not(#eggHotLeft):not(#eggHotRight) {
+    display: none;
+  }
+
+  #eggHotLeft,
+  #eggHotRight {
+    opacity: 0;
   }
 }
 
