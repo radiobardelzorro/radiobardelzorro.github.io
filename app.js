@@ -944,11 +944,146 @@
     }
 
     /* ==========================================
+       HUEVO DE PASCUA — SERGIO
+       4 clics en cruz sobre el reproductor:
+       arriba (disco) → abajo (ecualizador) →
+       izquierda (‹) → derecha (›)
+    ========================================== */
+
+    function setupSergioEasterEgg() {
+      const ORDER = ["top", "bottom", "left", "right"];
+      const RESET_MS = 8000;
+
+      const hotspots = {
+        top: document.getElementById("vinylDisc"),
+        bottom: document.getElementById("vinylEqBar"),
+        left: document.getElementById("eggHotLeft"),
+        right: document.getElementById("eggHotRight")
+      };
+
+      const crossLayer = document.getElementById("egg2CrossLayer");
+      const crossV = document.getElementById("egg2CrossV");
+      const crossH = document.getElementById("egg2CrossH");
+      const dotTop = document.getElementById("egg2DotTop");
+      const dotLeft = document.getElementById("egg2DotLeft");
+
+      const reveal = document.getElementById("egg2Reveal");
+      const revealClose = document.getElementById("egg2RevealClose");
+      const confettiLayer = document.getElementById("egg2Confetti");
+
+      if (
+        !hotspots.top || !hotspots.bottom || !hotspots.left || !hotspots.right ||
+        !crossLayer || !crossV || !crossH || !dotTop || !dotLeft ||
+        !reveal || !revealClose || !confettiLayer
+      ) {
+        return;
+      }
+
+      let step = 0;
+      let resetTimer = null;
+      let closeTimeout = null;
+
+      function resetProgress() {
+        step = 0;
+        crossLayer.style.transition = "";
+        crossLayer.style.opacity = "0";
+        crossV.style.strokeDashoffset = "100";
+        crossH.style.strokeDashoffset = "100";
+        dotTop.classList.remove("show");
+        dotLeft.classList.remove("show");
+      }
+
+      function armReset() {
+        clearTimeout(resetTimer);
+        resetTimer = setTimeout(resetProgress, RESET_MS);
+      }
+
+      Object.keys(hotspots).forEach((key) => {
+        hotspots[key].addEventListener("click", () => {
+          const expected = ORDER[step];
+
+          /*
+            Clic fuera de orden: se ignora sin dar ninguna pista visual.
+            Así el mecanismo no se delata por accidente.
+          */
+          if (key !== expected) return;
+
+          crossLayer.style.opacity = "1";
+          armReset();
+
+          if (key === "top") {
+            dotTop.classList.add("show");
+          } else if (key === "bottom") {
+            crossV.style.transition = "stroke-dashoffset 0.9s ease";
+            crossV.style.strokeDashoffset = "0";
+          } else if (key === "left") {
+            dotLeft.classList.add("show");
+          } else if (key === "right") {
+            crossH.style.transition = "stroke-dashoffset 0.9s ease";
+            crossH.style.strokeDashoffset = "0";
+          }
+
+          step++;
+
+          if (step === ORDER.length) {
+            clearTimeout(resetTimer);
+            setTimeout(() => {
+              crossLayer.style.transition = "opacity 0.6s ease";
+              crossLayer.style.opacity = "0";
+              setTimeout(playSergioReveal, 500);
+            }, 1100);
+          }
+        });
+      });
+
+      function makeConfetti() {
+        confettiLayer.innerHTML = "";
+        const colors = ["#c81d1d", "#e0a92e", "#2f7d3a", "#4fb0d9", "#c9c9c9"];
+
+        for (let i = 0; i < 60; i++) {
+          const piece = document.createElement("i");
+          piece.className = "egg2-confetti-piece";
+
+          const isStrip = Math.random() > 0.5;
+          if (isStrip) {
+            piece.style.width = "5px";
+            piece.style.height = "14px";
+          } else {
+            piece.style.width = "8px";
+            piece.style.height = "8px";
+            piece.style.borderRadius = "50%";
+          }
+
+          piece.style.left = (Math.random() * 96) + "%";
+          piece.style.background = colors[i % colors.length];
+          piece.style.animationDuration = (3 + Math.random() * 2) + "s";
+          piece.style.animationDelay = (Math.random() * 16) + "s";
+          confettiLayer.appendChild(piece);
+        }
+      }
+
+      function playSergioReveal() {
+        makeConfetti();
+        reveal.classList.add("show");
+        closeTimeout = setTimeout(closeSergioReveal, 20000);
+      }
+
+      function closeSergioReveal() {
+        clearTimeout(closeTimeout);
+        reveal.classList.remove("show");
+        resetProgress();
+      }
+
+      revealClose.addEventListener("click", closeSergioReveal);
+    }
+
+    /* ==========================================
        INIT
     ========================================== */
 
     buildFooterWave();
     setupEasterEgg();
+    setupSergioEasterEgg();
     buildEqBars();
     setEqBarsIdle();
     setupScrollSpy();
