@@ -432,7 +432,7 @@
     <div class="shell footer-inner">
 
       <div class="footer-center">
-        <div class="footer-fox"><img src="zorro-nocturno.webp" alt="" aria-hidden="true" loading="lazy"></div>
+        <div class="footer-fox" id="footerFox"><img src="zorro-nocturno.webp" alt="" aria-hidden="true" loading="lazy"></div>
 
         <div class="footer-phrase">
           LA NOCHE SIGUE <span>SONANDO</span>
@@ -448,6 +448,18 @@
   </footer>
 
   <div class="status-message" id="statusMessage"></div>
+
+  <!-- HUEVO DE PASCUA: 17 clics en el zorro del footer -->
+  <div class="egg-scene" id="eggScene" aria-hidden="true">
+    <div class="egg-glow-backdrop"></div>
+    <div class="egg-fox-stage" id="eggFoxStage">
+      <div class="egg-fox-visual">
+        <img class="egg-big-fox" src="zorro-nocturno.webp" alt="">
+        <img class="egg-fox-reflection" src="zorro-nocturno.webp" alt="" aria-hidden="true">
+      </div>
+      <div class="egg-speech-bubble"><span id="eggBubbleText">Hola, Martin</span></div>
+    </div>
+  </div>
 
   <audio
     id="radioAudio"
