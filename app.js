@@ -1065,6 +1065,7 @@
       if (!list || !searchInput) return;
 
       let searchTimer = null;
+      let blurTimer = null;
 
       function escapeHtml(text) {
         const div = document.createElement("div");
@@ -1081,12 +1082,21 @@
         }, 3200);
       }
 
+      function openDropdown() {
+        list.classList.add("show");
+      }
+
+      function closeDropdown() {
+        list.classList.remove("show");
+      }
+
       async function loadSongs(query) {
-        list.innerHTML = '<div class="request-loader">Buscando canciones...</div>';
+        list.innerHTML = '<div class="request-loader">Buscando...</div>';
+        openDropdown();
 
         const url =
           `${REQUEST_API_BASE}/station/${REQUEST_STATION_ID}/requests` +
-          (query ? `?searchPhrase=${encodeURIComponent(query)}` : "");
+          `?searchPhrase=${encodeURIComponent(query)}`;
 
         try {
           const res = await fetch(url);
@@ -1102,7 +1112,7 @@
           console.error("Error cargando solicitudes:", error);
           list.innerHTML =
             '<div class="request-error">' +
-            "No se pudo conectar con el buscador de canciones. Intenta de nuevo en un momento." +
+            "No se pudo conectar con el buscador. Intenta de nuevo en un momento." +
             "</div>";
         }
       }
@@ -1116,7 +1126,7 @@
           return;
         }
 
-        items.slice(0, 40).forEach((item) => {
+        items.slice(0, 12).forEach((item) => {
           const song = item.song || {};
           const requestId = item.request_id;
 
@@ -1164,6 +1174,8 @@
           btn.classList.add("done");
           showToast(`"${songTitle}" fue agregada a la cola`, false);
 
+          setTimeout(closeDropdown, 900);
+
         } catch (error) {
           btn.disabled = false;
           btn.textContent = "SOLICITAR";
@@ -1173,11 +1185,36 @@
 
       searchInput.addEventListener("input", (event) => {
         clearTimeout(searchTimer);
-        const value = event.target.value;
+        const value = event.target.value.trim();
+
+        if (!value) {
+          closeDropdown();
+          list.innerHTML = "";
+          return;
+        }
+
         searchTimer = setTimeout(() => loadSongs(value), 400);
       });
 
-      loadSongs("");
+      searchInput.addEventListener("focus", () => {
+        if (searchInput.value.trim() && list.innerHTML) {
+          openDropdown();
+        }
+      });
+
+      /*
+        Al perder el foco cerramos el dropdown, con un
+        pequeño retraso para que el clic en "SOLICITAR"
+        alcance a registrarse antes de que se oculte.
+      */
+      searchInput.addEventListener("blur", () => {
+        blurTimer = setTimeout(closeDropdown, 180);
+      });
+
+      list.addEventListener("mousedown", (event) => {
+        event.preventDefault();
+        clearTimeout(blurTimer);
+      });
     }
 
     /* ==========================================
