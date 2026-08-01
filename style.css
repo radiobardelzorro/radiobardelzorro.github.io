@@ -2374,14 +2374,17 @@
 
       .request-zone {
         padding-top: 0;
+        padding-bottom: 30px;
       }
 
       .request-card-panel {
         width: 100%;
+        overflow: visible;
       }
 
-      .request-search-row {
-        margin: 18px 0 14px;
+      .request-search-wrap {
+        position: relative;
+        margin: 18px 0 4px;
       }
 
       .request-search-row input {
@@ -2398,11 +2401,27 @@
       .request-search-row input::placeholder { color: var(--muted-2); }
       .request-search-row input:focus { border-color: var(--orange); }
 
+      /* Dropdown flotante: no empuja el resto de la página */
       .request-song-list {
-        max-height: 480px;
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        max-height: 360px;
         overflow-y: auto;
-        display: grid;
+        display: none;
+        flex-direction: column;
         gap: 4px;
+        background: #0d0b09;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 8px;
+        box-shadow: var(--shadow);
+        z-index: 30;
+      }
+
+      .request-song-list.show {
+        display: flex;
       }
 
       .request-song-list::-webkit-scrollbar { width: 6px; }
@@ -2412,19 +2431,17 @@
         display: flex;
         align-items: center;
         gap: 14px;
-        padding: 10px 12px;
-        border-radius: 12px;
-        border: 1px solid transparent;
-        transition: background 0.15s ease, border-color 0.15s ease;
+        padding: 8px 10px;
+        border-radius: 10px;
+        transition: background 0.15s ease;
       }
       .request-song-item:hover {
-        background: rgba(255, 104, 0, 0.06);
-        border-color: var(--line);
+        background: rgba(255, 104, 0, 0.08);
       }
 
       .request-song-cover {
-        width: 46px;
-        height: 46px;
+        width: 40px;
+        height: 40px;
         border-radius: 8px;
         background: #1a1512;
         flex-shrink: 0;
@@ -2434,7 +2451,7 @@
       .request-song-info { flex: 1; min-width: 0; }
 
       .request-song-title {
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 700;
         color: var(--white);
         white-space: nowrap;
@@ -2443,7 +2460,7 @@
       }
 
       .request-song-artist {
-        font-size: 12px;
+        font-size: 11px;
         color: var(--muted);
         white-space: nowrap;
         overflow: hidden;
@@ -2454,10 +2471,10 @@
         background: transparent;
         border: 1px solid var(--orange);
         color: var(--orange-2);
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 700;
         letter-spacing: 0.06em;
-        padding: 8px 16px;
+        padding: 7px 14px;
         border-radius: 999px;
         cursor: pointer;
         white-space: nowrap;
@@ -2473,18 +2490,15 @@
 
       .request-panel-foot {
         margin-top: 14px;
-        padding-top: 14px;
-        border-top: 1px solid var(--line);
         font-size: 11px;
         color: var(--muted-2);
-        text-align: center;
         letter-spacing: 0.03em;
       }
 
       .request-loader,
       .request-empty {
         text-align: center;
-        padding: 24px;
+        padding: 18px;
         color: var(--muted-2);
         font-size: 13px;
       }
