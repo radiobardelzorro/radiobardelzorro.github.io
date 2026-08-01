@@ -1126,7 +1126,10 @@
           return;
         }
 
-        items.slice(0, 12).forEach((item) => {
+        const visible = items.slice(0, 12);
+        const remaining = items.length - visible.length;
+
+        visible.forEach((item) => {
           const song = item.song || {};
           const requestId = item.request_id;
 
@@ -1143,6 +1146,14 @@
           `;
           list.appendChild(row);
         });
+
+        if (remaining > 0) {
+          const hint = document.createElement("div");
+          hint.className = "request-more-hint";
+          hint.textContent =
+            `+ ${remaining} canción${remaining === 1 ? "" : "es"} más — sigue escribiendo para afinar tu búsqueda`;
+          list.appendChild(hint);
+        }
 
         list.querySelectorAll(".request-song-btn-action").forEach((btn) => {
           btn.addEventListener("click", () => submitRequest(btn));
