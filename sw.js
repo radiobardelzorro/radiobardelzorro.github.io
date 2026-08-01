@@ -6,7 +6,7 @@
   página no queda en blanco si la conexión falla brevemente.
 */
 
-const CACHE_NAME = "bar-del-zorro-v9";
+const CACHE_NAME = "bar-del-zorro-v10";
 
 const SHELL_ASSETS = [
   "/",
@@ -16,6 +16,7 @@ const SHELL_ASSETS = [
   "/zorro-nocturno.webp",
   "/bar-zorro-fondo.webp",
   "/favicon-zorro.svg",
+  "/apple-touch-icon.png",
   "/manifest.json"
 ];
 
@@ -52,11 +53,8 @@ self.addEventListener("fetch", (event) => {
 
   /* No interceptar el stream de audio ni la API */
   if (
-    url.hostname === "sonic-us.arkeo.cl" ||
-    url.hostname === "209.15.174.162" ||
     url.hostname === "radio.bardelzorro.cl" ||
     url.pathname.includes("/stream") ||
-    url.pathname.includes("/get_info") ||
     url.pathname.includes("/api/")
   ) {
     return;
