@@ -198,16 +198,46 @@
                   >
                 </div>
 
-                <button class="request-song-btn" id="requestSongBtn" type="button">
-                  ♪ PEDIR CANCIÓN
-                </button>
-
               </div>
 
               <div class="vinyl-eq-bar" id="vinylEqBar" aria-hidden="true"></div>
 
             </div>
 
+          </div>
+
+        </article>
+
+      </div>
+    </section>
+
+    <!-- PEDIR CANCIÓN -->
+    <section class="content-zone request-zone" id="pedir-cancion">
+      <div class="shell">
+
+        <article class="panel request-card-panel reveal">
+
+          <div class="panel-kicker">RADIO BAR DEL ZORRO</div>
+
+          <h2 class="panel-title">
+            PEDIR UNA CANCIÓN
+          </h2>
+
+          <div class="small-orange-line"></div>
+
+          <div class="request-search-row">
+            <input
+              id="requestSearchInput"
+              type="text"
+              placeholder="Buscar canción o artista..."
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="request-song-list" id="requestSongList"></div>
+
+          <div class="request-panel-foot">
+            Tu canción entra a la cola — no interrumpe lo que está sonando ahora.
           </div>
 
         </article>
@@ -449,31 +479,6 @@
   </footer>
 
   <div class="status-message" id="statusMessage"></div>
-
-  <!-- MODAL: PEDIR CANCIÓN -->
-  <div class="request-modal" id="requestModal" aria-hidden="true">
-    <div class="request-panel">
-
-      <div class="request-panel-head">
-        <div>
-          <div class="request-panel-kicker">RADIO BAR DEL ZORRO</div>
-          <h2>Pedir una canción</h2>
-        </div>
-        <button class="request-close-btn" id="requestCloseBtn" type="button" aria-label="Cerrar">✕</button>
-      </div>
-
-      <div class="request-search-row">
-        <input id="requestSearchInput" type="text" placeholder="Buscar canción o artista..." autocomplete="off">
-      </div>
-
-      <div class="request-song-list" id="requestSongList"></div>
-
-      <div class="request-panel-foot">
-        Tu canción entra a la cola — no interrumpe lo que está sonando ahora.
-      </div>
-
-    </div>
-  </div>
 
   <div class="request-toast" id="requestToast"></div>
 
