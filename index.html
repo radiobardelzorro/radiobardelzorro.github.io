@@ -8,7 +8,7 @@
 
   <meta
     name="description"
-    content="Radio Bar del Zorro. Música para los que todavía escuchan con el alma."
+    content="Radio Bar del Zorro. Curaduría musical nocturna, sin comerciales. Rock, cumbia, metal, electrónica y urbano, 24/7."
   >
 
   <meta name="theme-color" content="#070707">
@@ -198,6 +198,10 @@
                   >
                 </div>
 
+                <button class="request-song-btn" id="requestSongBtn" type="button">
+                  ♪ PEDIR CANCIÓN
+                </button>
+
               </div>
 
               <div class="vinyl-eq-bar" id="vinylEqBar" aria-hidden="true"></div>
@@ -229,9 +233,8 @@
 
             <div class="intro-copy">
               <p>
-                Música para los que todavía escuchan con el alma.
-                Rock, cumbia, metal, electrónica, urbano y lo que se nos ocurra sumar.
-                Sin comerciales. Sin rodeos. Solo buena música.
+                Rock, cumbia, metal, electrónica, urbano y lo que se nos ocurra sumar
+                — elegido a mano, no por algoritmo.
               </p>
 
               <p>
@@ -279,7 +282,7 @@
                 <h3>MADRUGADA</h3>
                 <div class="atmo-time">00:00 — 06:00</div>
                 <p>
-                  Sonidos profundos para quienes siguen despiertos.
+                  Sonidos profundos, ritmo lento.
                 </p>
               </div>
 
@@ -313,7 +316,7 @@
             </div>
 
             <div class="dynamic-note">
-              ⌁ LA PROGRAMACIÓN ES DINÁMICA Y SE ADAPTA A LA NOCHE ⌁
+              ⌁ PRÓXIMAMENTE: PLAYLISTS QUE CAMBIAN SOLAS SEGÚN LA HORA ⌁
             </div>
 
           </article>
@@ -446,6 +449,33 @@
   </footer>
 
   <div class="status-message" id="statusMessage"></div>
+
+  <!-- MODAL: PEDIR CANCIÓN -->
+  <div class="request-modal" id="requestModal" aria-hidden="true">
+    <div class="request-panel">
+
+      <div class="request-panel-head">
+        <div>
+          <div class="request-panel-kicker">RADIO BAR DEL ZORRO</div>
+          <h2>Pedir una canción</h2>
+        </div>
+        <button class="request-close-btn" id="requestCloseBtn" type="button" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="request-search-row">
+        <input id="requestSearchInput" type="text" placeholder="Buscar canción o artista..." autocomplete="off">
+      </div>
+
+      <div class="request-song-list" id="requestSongList"></div>
+
+      <div class="request-panel-foot">
+        Tu canción entra a la cola — no interrumpe lo que está sonando ahora.
+      </div>
+
+    </div>
+  </div>
+
+  <div class="request-toast" id="requestToast"></div>
 
   <!-- HUEVO DE PASCUA: 17 clics en el zorro del footer -->
   <div class="egg-scene" id="eggScene" aria-hidden="true">
