@@ -1243,8 +1243,20 @@
     loadRadioData();
 
     /*
-      SonicPanel recomienda intervalos
-      mínimos de 5-10 segundos.
-      Usamos 10 segundos.
+      Consultamos la API cada 10 segundos, pero solo
+      mientras la pestaña esté visible. Si el usuario
+      cambia de pestaña o minimiza, pausamos el polling
+      (ahorra batería y peticiones al servidor) y al
+      volver refrescamos de inmediato.
     */
-    setInterval(loadRadioData, 10000);
+    let pollTimer = setInterval(loadRadioData, 10000);
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        clearInterval(pollTimer);
+        pollTimer = null;
+      } else if (!pollTimer) {
+        loadRadioData();
+        pollTimer = setInterval(loadRadioData, 10000);
+      }
+    });
