@@ -2513,6 +2513,14 @@
         line-height: 1.5;
       }
 
+      .request-more-hint {
+        text-align: center;
+        padding: 10px 8px 4px;
+        color: var(--muted-2);
+        font-size: 11px;
+        font-style: italic;
+      }
+
       .request-toast {
         position: fixed;
         bottom: 24px;
