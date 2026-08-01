@@ -4,18 +4,15 @@
     ========================================== */
 
     const API_URL =
-      "https://sonic-us.arkeo.cl/cp/get_info.php?p=8054";
+      "https://radio.bardelzorro.cl/api/nowplaying/radio_bar_del_zorro";
 
     /*
       STREAM:
-      Lista de endpoints candidatos, en orden de preferencia.
-      Si conoces el enlace SSL exacto del stream, ponlo primero
-      en esta lista y elimina el resto.
+      Ahora servido por AzuraCast a través de
+      radio.bardelzorro.cl (reverse proxy + SSL).
     */
     const STREAM_CANDIDATES = [
-      "https://sonic-us.arkeo.cl/8054/stream",
-      "https://sonic-us.arkeo.cl:8054/stream",
-      "https://sonic-us.arkeo.cl/stream/8054"
+      "https://radio.bardelzorro.cl/listen/radio_bar_del_zorro/radio.mp3"
     ];
 
     const DEFAULT_COVER = "zorro-nocturno.webp";
@@ -88,39 +85,6 @@
         .trim();
     }
 
-    function splitArtistTitle(rawTitle) {
-      const clean = cleanTrackText(rawTitle);
-
-      if (!clean) {
-        return {
-          artist: "Radio Bar del Zorro",
-          title: "Señal en vivo"
-        };
-      }
-
-      /*
-        Separamos por " - "
-        usando solo la primera separación útil.
-      */
-      const separator = " - ";
-      const index = clean.indexOf(separator);
-
-      if (index !== -1) {
-        const artist = clean.slice(0, index).trim();
-        const title = clean.slice(index + separator.length).trim();
-
-        return {
-          artist: artist || "Radio Bar del Zorro",
-          title: title || clean
-        };
-      }
-
-      return {
-        artist: "Radio Bar del Zorro",
-        title: clean
-      };
-    }
-
     function normalizeArtUrl(url) {
       if (!url) return DEFAULT_COVER;
 
@@ -131,30 +95,14 @@
       }
     }
 
-    /*
-      Cuando nadie está transmitiendo en vivo, la API
-      de arkeo devuelve djusername: "No DJ". En ese caso
-      mostramos "AutoDJ" en vez de ese texto tal cual,
-      porque comunica mejor que es la programación automática.
-    */
-    function resolveDjLabel(rawDjName) {
-      const clean = String(rawDjName || "").trim();
-
-      if (!clean || clean.toLowerCase() === "no dj") {
-        return "AutoDJ";
-      }
-
-      return clean;
-    }
-
     /* ==========================================
-       API REAL
+       API REAL (AzuraCast)
     ========================================== */
 
     async function loadRadioData() {
       try {
         const response = await fetch(
-          API_URL + "&_=" + Date.now(),
+          API_URL + "?_=" + Date.now(),
           {
             cache: "no-store"
           }
@@ -169,7 +117,7 @@
         const data = await response.json();
 
         updateNowPlaying(data);
-        updateHistory(data.history);
+        updateHistory(data.song_history);
         updateSignalMeta(data);
 
       } catch (error) {
@@ -186,16 +134,18 @@
     }
 
     function updateNowPlaying(data) {
-      const parsed = splitArtistTitle(data.title);
+      const song = (data.now_playing && data.now_playing.song) || {};
 
-      trackTitle.textContent = parsed.title;
-      trackArtist.textContent = parsed.artist;
+      trackTitle.textContent = song.title || "Señal en vivo";
+      trackArtist.textContent = song.artist || "Radio Bar del Zorro";
 
       trackSource.textContent = "Actualizado desde la señal real";
 
-      updateDjIndicator(data.djusername);
+      const isLive = Boolean(data.live && data.live.is_live);
+      const streamerName = data.live ? data.live.streamer_name : "";
+      updateDjIndicator(isLive, streamerName);
 
-      const artUrl = normalizeArtUrl(data.art);
+      const artUrl = normalizeArtUrl(song.art);
 
       if (coverArt.getAttribute("data-current-src") !== artUrl) {
         coverArt.setAttribute("data-current-src", artUrl);
@@ -220,27 +170,38 @@
       };
     }
 
-    function updateDjIndicator(rawDjName) {
-      const clean = String(rawDjName || "").trim();
-      const isLive = clean && clean.toLowerCase() !== "no dj";
+    /*
+      AzuraCast entrega "is_live" como booleano y,
+      cuando no hay nadie transmitiendo, el AutoDJ
+      se hace cargo. Mostramos "AutoDJ" en ese caso.
+    */
+    function updateDjIndicator(isLive, streamerName) {
+      const clean = String(streamerName || "").trim();
 
-      djLabelText.textContent = resolveDjLabel(rawDjName);
+      djLabelText.textContent = isLive && clean ? clean : "AutoDJ";
 
       if (vinylDjRow) {
-        vinylDjRow.classList.toggle("is-live", Boolean(isLive));
+        vinylDjRow.classList.toggle("is-live", isLive);
       }
     }
 
     function updateSignalMeta(data) {
-      const bitrate = data.bitrate
-        ? String(data.bitrate).replace(/[^\d]/g, "")
+      const mounts = (data.station && data.station.mounts) || [];
+      const mount = mounts[0] || {};
+
+      const bitrate = mount.bitrate
+        ? String(mount.bitrate).replace(/[^\d]/g, "")
         : "320";
 
+      const format = mount.format
+        ? String(mount.format).toUpperCase()
+        : "MP3";
+
       vinylTech.textContent =
-        `MP3 · ${bitrate || "320"} KBPS`;
+        `${format} · ${bitrate || "320"} KBPS`;
 
       streamInfo.textContent =
-        `MP3 · ${bitrate || "320"} KBPS informado por la señal.`;
+        `${format} · ${bitrate || "320"} KBPS informado por la señal.`;
     }
 
     function updateHistory(history) {
@@ -261,7 +222,15 @@
         el diseño compacto como la referencia.
       */
       const cleaned = history
-        .map(cleanTrackText)
+        .map((item) => {
+          const song = item.song || {};
+          const artist = cleanTrackText(song.artist);
+          const title = cleanTrackText(song.title);
+
+          if (!artist && !title) return "";
+
+          return artist ? `${artist} - ${title}` : title;
+        })
         .filter(Boolean)
         .slice(0, 6);
 
@@ -1085,21 +1054,17 @@
        REQUEST_API_BASE por ese dominio.
     ========================================== */
 
-    const REQUEST_API_BASE = "https://209.15.174.162:10443/api";
+    const REQUEST_API_BASE = "https://radio.bardelzorro.cl/api";
     const REQUEST_STATION_ID = "radio_bar_del_zorro";
 
     function setupSongRequests() {
-      const openBtn = document.getElementById("requestSongBtn");
-      const modal = document.getElementById("requestModal");
-      const closeBtn = document.getElementById("requestCloseBtn");
       const searchInput = document.getElementById("requestSearchInput");
       const list = document.getElementById("requestSongList");
       const toast = document.getElementById("requestToast");
 
-      if (!openBtn || !modal) return;
+      if (!list || !searchInput) return;
 
       let searchTimer = null;
-      let hasLoadedOnce = false;
 
       function escapeHtml(text) {
         const div = document.createElement("div");
@@ -1206,43 +1171,13 @@
         }
       }
 
-      function openModal() {
-        modal.classList.add("show");
-        modal.setAttribute("aria-hidden", "false");
-        document.body.style.overflow = "hidden";
-
-        if (!hasLoadedOnce) {
-          hasLoadedOnce = true;
-          loadSongs("");
-        }
-
-        setTimeout(() => searchInput.focus(), 150);
-      }
-
-      function closeModal() {
-        modal.classList.remove("show");
-        modal.setAttribute("aria-hidden", "true");
-        document.body.style.overflow = "";
-      }
-
-      openBtn.addEventListener("click", openModal);
-      closeBtn.addEventListener("click", closeModal);
-
-      modal.addEventListener("click", (event) => {
-        if (event.target === modal) closeModal();
-      });
-
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && modal.classList.contains("show")) {
-          closeModal();
-        }
-      });
-
       searchInput.addEventListener("input", (event) => {
         clearTimeout(searchTimer);
         const value = event.target.value;
         searchTimer = setTimeout(() => loadSongs(value), 400);
       });
+
+      loadSongs("");
     }
 
     /* ==========================================
