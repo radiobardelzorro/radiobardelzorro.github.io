@@ -1078,12 +1078,181 @@
     }
 
     /* ==========================================
+       PEDIR CANCIÓN
+       Consume la API pública de solicitudes de
+       AzuraCast. Cuando radio.bardelzorro.cl esté
+       activo (Nginx + SSL), basta con cambiar
+       REQUEST_API_BASE por ese dominio.
+    ========================================== */
+
+    const REQUEST_API_BASE = "https://209.15.174.162:10443/api";
+    const REQUEST_STATION_ID = "radio_bar_del_zorro";
+
+    function setupSongRequests() {
+      const openBtn = document.getElementById("requestSongBtn");
+      const modal = document.getElementById("requestModal");
+      const closeBtn = document.getElementById("requestCloseBtn");
+      const searchInput = document.getElementById("requestSearchInput");
+      const list = document.getElementById("requestSongList");
+      const toast = document.getElementById("requestToast");
+
+      if (!openBtn || !modal) return;
+
+      let searchTimer = null;
+      let hasLoadedOnce = false;
+
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text || "";
+        return div.innerHTML;
+      }
+
+      function showToast(message, isError) {
+        toast.textContent = message;
+        toast.className = "request-toast show" + (isError ? " error" : "");
+        clearTimeout(showToast.timer);
+        showToast.timer = setTimeout(() => {
+          toast.className = "request-toast" + (isError ? " error" : "");
+        }, 3200);
+      }
+
+      async function loadSongs(query) {
+        list.innerHTML = '<div class="request-loader">Buscando canciones...</div>';
+
+        const url =
+          `${REQUEST_API_BASE}/station/${REQUEST_STATION_ID}/requests` +
+          (query ? `?searchPhrase=${encodeURIComponent(query)}` : "");
+
+        try {
+          const res = await fetch(url);
+
+          if (!res.ok) {
+            throw new Error("estado " + res.status);
+          }
+
+          const data = await res.json();
+          renderSongs(Array.isArray(data) ? data : []);
+
+        } catch (error) {
+          console.error("Error cargando solicitudes:", error);
+          list.innerHTML =
+            '<div class="request-error">' +
+            "No se pudo conectar con el buscador de canciones. Intenta de nuevo en un momento." +
+            "</div>";
+        }
+      }
+
+      function renderSongs(items) {
+        list.innerHTML = "";
+
+        if (items.length === 0) {
+          list.innerHTML =
+            '<div class="request-empty">Sin resultados para esa búsqueda.</div>';
+          return;
+        }
+
+        items.slice(0, 40).forEach((item) => {
+          const song = item.song || {};
+          const requestId = item.request_id;
+
+          const row = document.createElement("div");
+          row.className = "request-song-item";
+          row.innerHTML = `
+            <img class="request-song-cover" src="${song.art || ""}" alt=""
+              onerror="this.style.background='#1a1512'; this.src='';">
+            <div class="request-song-info">
+              <div class="request-song-title">${escapeHtml(song.title || "Sin título")}</div>
+              <div class="request-song-artist">${escapeHtml(song.artist || "Artista desconocido")}</div>
+            </div>
+            <button class="request-song-btn-action" data-request-id="${requestId}">SOLICITAR</button>
+          `;
+          list.appendChild(row);
+        });
+
+        list.querySelectorAll(".request-song-btn-action").forEach((btn) => {
+          btn.addEventListener("click", () => submitRequest(btn));
+        });
+      }
+
+      async function submitRequest(btn) {
+        const requestId = btn.getAttribute("data-request-id");
+        const songTitle = btn
+          .closest(".request-song-item")
+          .querySelector(".request-song-title").textContent;
+
+        btn.disabled = true;
+        btn.textContent = "...";
+
+        try {
+          const res = await fetch(
+            `${REQUEST_API_BASE}/station/${REQUEST_STATION_ID}/request/${requestId}`,
+            { method: "POST" }
+          );
+
+          const data = await res.json().catch(() => ({}));
+
+          if (!res.ok) {
+            throw new Error(data.message || "No se pudo pedir la canción");
+          }
+
+          btn.textContent = "PEDIDA ✓";
+          btn.classList.add("done");
+          showToast(`"${songTitle}" fue agregada a la cola`, false);
+
+        } catch (error) {
+          btn.disabled = false;
+          btn.textContent = "SOLICITAR";
+          showToast(error.message, true);
+        }
+      }
+
+      function openModal() {
+        modal.classList.add("show");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+
+        if (!hasLoadedOnce) {
+          hasLoadedOnce = true;
+          loadSongs("");
+        }
+
+        setTimeout(() => searchInput.focus(), 150);
+      }
+
+      function closeModal() {
+        modal.classList.remove("show");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      openBtn.addEventListener("click", openModal);
+      closeBtn.addEventListener("click", closeModal);
+
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) closeModal();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && modal.classList.contains("show")) {
+          closeModal();
+        }
+      });
+
+      searchInput.addEventListener("input", (event) => {
+        clearTimeout(searchTimer);
+        const value = event.target.value;
+        searchTimer = setTimeout(() => loadSongs(value), 400);
+      });
+    }
+
+    /* ==========================================
        INIT
     ========================================== */
 
     buildFooterWave();
     setupEasterEgg();
     setupSergioEasterEgg();
+    setupSongRequests();
     buildEqBars();
     setEqBarsIdle();
     setupScrollSpy();
